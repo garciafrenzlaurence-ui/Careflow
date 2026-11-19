@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Careflow.Application/Careflow.Application.csproj" DisplayName="CareFlow.Application" Id="d4ed4d3c-60f7-4029-9a1f-5dfc7b51ef40" />
+  <Project Path="CareFlow.Desktop/CareFlow.Desktop.csproj" />
+  <Project Path="Careflow.Domain/Careflow.Domain.csproj" Id="fbf6b45b-b61e-423a-bcc3-21fbfb17add1" />
+  <Project Path="Careflow.Infrastructure/Careflow.Infrastructure.csproj" Id="60160abb-7cbd-496d-af50-96367a6eb3a7" />
+</Solution>

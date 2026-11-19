@@ -1,0 +1,277 @@
+
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:CareFlow.Desktop.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        d:DesignWidth="1100"
+        d:DesignHeight="900"
+        x:Class="CareFlow.Desktop.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Title="CareFlow - Diagnostic Booking"
+        Width="1100"
+        Height="900"
+        MinWidth="850"
+        MinHeight="700"
+        Background="#151A23"
+        Foreground="#E6EDF7">
+
+    <Design.DataContext>
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="32" Spacing="22">
+
+            <!-- Header -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="CareFlow"
+                           FontSize="30"
+                           FontWeight="Bold"
+                           Foreground="#60A5FA" />
+
+                <TextBlock Text="Diagnostic Booking Management"
+                           FontSize="16"
+                           Foreground="#B6C2D2" />
+
+                <TextBlock Text="Review service capacity, create bookings, and retrieve confirmed bookings."
+                           FontSize="14"
+                           Foreground="#8997AA" />
+            </StackPanel>
+
+            <!-- Create Booking -->
+            <Border Background="#202938"
+                    Padding="26"
+                    CornerRadius="14"
+                    BorderThickness="1"
+                    BorderBrush="#344155">
+
+                <StackPanel Spacing="18">
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Create a Booking"
+                                   FontSize="25"
+                                   FontWeight="Bold"
+                                   Foreground="#F1F5F9" />
+
+                        <TextBlock Text="Enter an existing patient ID, choose a date, and select one to three services."
+                                   Foreground="#AAB7C8"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+
+                    <Grid ColumnDefinitions="*,*"
+                          ColumnSpacing="18">
+
+                        <!-- Patient Selection -->
+                        <StackPanel Grid.Column="0" Spacing="7">
+                            <TextBlock Text="Existing Patient"
+                                       FontWeight="SemiBold" />
+
+                            <ComboBox ItemsSource="{Binding Patients}"
+                                      SelectedItem="{Binding SelectedPatient}"
+                                      Height="42"
+                                      PlaceholderText="Select a patient">
+
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DisplayName}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+
+                            </ComboBox>
+                        </StackPanel>
+
+                        <!-- Booking Date -->
+                        <StackPanel Grid.Column="1" Spacing="7">
+                            <TextBlock Text="Booking Date"
+                                       FontWeight="SemiBold" />
+
+                            <DatePicker SelectedDate="{Binding BookingDate}"
+                                        HorizontalAlignment="Stretch" />
+                        </StackPanel>
+
+                    </Grid>
+
+                    <!-- Diagnostic Services -->
+                    <StackPanel Spacing="10">
+
+                        <TextBlock Text="Diagnostic Services"
+                                   FontSize="19"
+                                   FontWeight="SemiBold" />
+
+                        <TextBlock Text="Select up to three different services. Capacity is refreshed for the selected date."
+                                   Foreground="#AAB7C8"
+                                   TextWrapping="Wrap" />
+
+                        <Border Background="#263B54"
+                                Padding="11"
+                                CornerRadius="8">
+
+                            <TextBlock Foreground="#BFDBFE">
+                                <Run Text="Selected: " />
+                                <Run Text="{Binding SelectedServiceCount}" />
+                                <Run Text=" / 3 services" />
+                            </TextBlock>
+
+                        </Border>
+
+                        <ItemsControl ItemsSource="{Binding DiagnosticServices}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:DiagnosticServiceOption">
+
+                                    <Border Padding="12"
+                                            Margin="0,3"
+                                            CornerRadius="8"
+                                            BorderThickness="1"
+                                            BorderBrush="#3B4A60"
+                                            Background="#182230">
+
+                                        <Grid ColumnDefinitions="*,Auto"
+                                              ColumnSpacing="12">
+
+                                            <CheckBox Grid.Column="0"
+                                                      Content="{Binding ServiceName}"
+                                                      IsChecked="{Binding IsSelected}"
+                                                      VerticalAlignment="Center"
+                                                      Foreground="#DCE5F0" />
+
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding RemainingCapacity, StringFormat='Remaining: {0}'}"
+                                                       Foreground="#93C5FD"
+                                                       VerticalAlignment="Center" />
+
+                                        </Grid>
+                                    </Border>
+
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock Text="Capacity is shown for the selected date. Final availability is checked again when the booking is submitted."
+                                   FontSize="12"
+                                   Foreground="#8997AA"
+                                   TextWrapping="Wrap" />
+
+                    </StackPanel>
+
+                    <!-- Loading Indicator -->
+                    <ProgressBar IsIndeterminate="True"
+                                 Height="6"
+                                 IsVisible="{Binding IsBusy}" />
+
+                    <!-- Success Message -->
+                    <Border IsVisible="{Binding IsSuccessful}"
+                            Background="#173B2B"
+                            BorderBrush="#287A50"
+                            BorderThickness="1"
+                            Padding="13"
+                            CornerRadius="8">
+
+                        <TextBlock Text="{Binding ResultMessage}"
+                                   Foreground="#A7F3C5"
+                                   TextWrapping="Wrap" />
+
+                    </Border>
+
+                    <!-- Error Message -->
+                    <Border IsVisible="{Binding IsError}"
+                            Background="#452626"
+                            BorderBrush="#A44747"
+                            BorderThickness="1"
+                            Padding="13"
+                            CornerRadius="8">
+
+                        <TextBlock Text="{Binding ResultMessage}"
+                                   Foreground="#FCA5A5"
+                                   TextWrapping="Wrap" />
+
+                    </Border>
+
+                    <!-- Submit Booking -->
+                    <Button Content="Submit Booking"
+                            Command="{Binding SubmitBookingCommand}"
+                            Height="48"
+                            Background="#2563EB"
+                            Foreground="White"
+                            FontSize="15"
+                            FontWeight="SemiBold" />
+
+                </StackPanel>
+            </Border>
+
+            <!-- Confirmed Bookings -->
+            <Border Background="#202938"
+                    Padding="24"
+                    CornerRadius="14"
+                    BorderThickness="1"
+                    BorderBrush="#344155">
+
+                <StackPanel Spacing="12">
+
+                    <Grid ColumnDefinitions="*,Auto">
+
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="Confirmed Bookings"
+                                       FontSize="21"
+                                       FontWeight="Bold" />
+
+                            <TextBlock Text="Previously confirmed bookings and their associated services."
+                                       Foreground="#AAB7C8" />
+                        </StackPanel>
+
+                        <Button Grid.Column="1"
+                                Content="Refresh"
+                                Command="{Binding RefreshBookingsCommand}"
+                                VerticalAlignment="Center" />
+
+                    </Grid>
+
+                    <ItemsControl ItemsSource="{Binding Bookings}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+
+                                <Border Background="#182230"
+                                        BorderBrush="#3B4A60"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="13"
+                                        Margin="0,3">
+
+                                    <StackPanel Spacing="4">
+
+                                        <TextBlock Text="{Binding BookingId, StringFormat='Booking #{0}'}"
+                                                   FontWeight="Bold"
+                                                   Foreground="#93C5FD" />
+
+                                        <TextBlock Text="{Binding PatientName, StringFormat='Patient: {0}'}" />
+
+                                        <TextBlock Text="{Binding PatientNumber, StringFormat='Patient number: {0}'}"
+                                                   Foreground="#AAB7C8" />
+
+                                        <TextBlock Text="{Binding BookingDate, StringFormat='Date: {0:MMMM dd, yyyy}'}" />
+
+                                        <TextBlock Text="{Binding Services, StringFormat='Services: {0}'}"
+                                                   TextWrapping="Wrap" />
+
+                                        <TextBlock Text="{Binding Status, StringFormat='Status: {0}'}"
+                                                   Foreground="#86EFAC" />
+
+                                    </StackPanel>
+                                </Border>
+
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Text="Bookings are stored in the local SQLite database and remain available after restarting CareFlow."
+                               Foreground="#8997AA"
+                               FontSize="12"
+                               TextWrapping="Wrap" />
+
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</Window>
