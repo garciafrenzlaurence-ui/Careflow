@@ -48,6 +48,3 @@ See `docs/relational-design.md`.
 
 ## Verification
 See `docs/verification-checklist.md`. Scenarios must be marked verified only after testing the running application and persisted SQLite data.
-
-## AI assistance acknowledgment
-AI-assisted development support was used to help review requirements, draft and revise implementation code, and prepare supporting documentation. The student team remains responsible for reviewing, understanding, testing, and validating the submitted work.
