@@ -57,10 +57,10 @@ public partial class App : Avalonia.Application
             await _serviceProvider!.GetRequiredService<DatabaseInitializer>().InitializeAsync();
             await viewModel.InitializeAsync();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             viewModel.ShowStartupError(
-                "CareFlow could not initialize its database. Check the database file permissions and restart the application.");
+                $"DATABASE ERROR:\n{ex}");
         }
     }
 }
